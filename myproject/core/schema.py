@@ -1,6 +1,24 @@
 import graphene
 from graphene_django import DjangoObjectType
-from .models import Category, Negocios
+from .models import Category, Negocios, Contact
+from ninja import Schema, ModelSchema
+
+class ContactSchema(ModelSchema):
+    class Config:
+        model = Contact
+        model_fields = '__all__'
+class NotFoundSchema(Schema):
+    message: str
+
+class NegocioSchema(Schema):
+    id: int
+    name: str
+    cat_name: str
+    image: str
+    description: str
+
+class NotFoundSchema(Schema):
+    message: str
 
 class CategoryType(DjangoObjectType):
     class Meta: 
@@ -13,6 +31,7 @@ class NegocioType(DjangoObjectType):
         fields = (
         'id',
         'name',
+        'cat_name',
         'image',
         'description',
         'date_created',
@@ -21,9 +40,13 @@ class NegocioType(DjangoObjectType):
 class Query(graphene.ObjectType):
     categories = graphene.List(CategoryType)
     negocios = graphene.List(NegocioType)
+    negocio = graphene.Field(NegocioType, id=graphene.String())
 
     def resolve_negocios(root, info, **kwargs):
         return Negocios.objects.all()
+    
+    def resolve_negocio(root, info, id):
+        return Negocios.objects.get(pk=id)
 
     def resolve_categories(root, info, **kwargs):
         # Querying a list

@@ -11,6 +11,7 @@ class Category(models.Model):
 
 class Negocios(models.Model):
     name = models.CharField(max_length=100)
+    cat_name = models.CharField(max_length=100)
     description = models.TextField()
     image = models.ImageField(upload_to ='uploads/', blank=True, null=True)
     date_created = models.DateField(auto_now_add=True)
@@ -20,3 +21,13 @@ class Negocios(models.Model):
 
     def __str__(self):
         return self.name
+
+class Contact(models.Model):
+    name = models.CharField(max_length=255)
+    mail = models.EmailField(max_length = 254)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.name
+
+
